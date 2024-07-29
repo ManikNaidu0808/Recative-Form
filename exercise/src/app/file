@@ -1,0 +1,30 @@
+import { Component ,OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validator, Validators } from '@angular/forms';
+import {PhoneFormatPipe} from './phone-number.pipe'
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  constructor(private fb:FormBuilder ){}
+
+  form:FormGroup = this.fb.group({
+    first_Name : ['',[Validators.required,Validators.minLength(5),Validators.maxLength(10)]],
+    Last_Name : ['',[Validators.required,Validators.minLength(5),Validators.maxLength(10)]],
+    Email : ['',[Validators.required,Validators.email,this.isGmailOrYahooEmail]],
+    phoneNumber: ['', Validators.required]
+  })
+
+
+
+  isGmailOrYahooEmail(email: string): boolean {
+    const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+    const yahooRegex = /^[a-zA-Z0-9._%+-]+@yahoo\.com$/;
+    return gmailRegex.test(email) || yahooRegex.test(email);
+  }
+  submit(){
+    console.log("Form Group" , this.form , "Form Values" , this.form.value);
+  }
+}

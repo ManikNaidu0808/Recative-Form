@@ -1,0 +1,161 @@
+<div class="mainContainer">
+  
+<form [formGroup]="form" class="form_Container p-2 " (ngSubmit)="submit()">
+  <h1>Reactive Form</h1>
+    <div class="row">
+      <div class="col-6">
+        <label for="first_Name">First Name</label>
+        <input type="text" class="form-control" id="first_Name" placeholder="First name" formControlName="first_Name">
+        <div class="mb-3">
+          <p *ngIf="form.get('first_Name')?.hasError('required') && form.get('first_Name')?.touched" class="text-danger"> First Name is Required</p>
+          <p *ngIf="form.get('first_Name')?.hasError('minlength') && form.get('first_Name')?.touched" class="text-danger">Minimum character Should be 5</p>
+          <p *ngIf="form.get('first_Name')?.hasError('maxlength') && form.get('first_Name')?.touched" class="text-danger">Maximum character Should be 10</p>   
+          <p *ngIf="form.get('first_Name')?.hasError('pattern') && form.get('first_Name')?.touched" class="text-danger">Only letters are allowed</p>
+        </div>  
+      </div>
+      <div class="col-6">
+        <label for="Last_Name">Last Name</label>
+        <input type="text" class="form-control" id="Last_Name" placeholder="Last name" formControlName="Last_Name">
+        <div  class="mb-3">
+          <p *ngIf="form.get('Last_Name')?.hasError('required') && form.get('Last_Name')?.touched" class="text-danger"> Last Name is Required</p>
+          <p *ngIf="form.get('Last_Name')?.hasError('minlength') && form.get('Last_Name')?.touched" class="text-danger">Minimum character Should be 5</p>
+          <p *ngIf="form.get('Last_Name')?.hasError('maxlength') && form.get('Last_Name')?.touched" class="text-danger">Maximum character Should be 10</p>   
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="row">
+      <div class="col-6">
+        <label for="inputEmail4">Email</label>
+        <input type="email" class="form-control" id="inputEmail4" placeholder="Email" formControlName="Email">
+        <div class="mb-3">
+          <!-- <p *ngIf="form.get('Email')?.hasError('isGmailOrYahooEmail')  && form.get('Email')?.touched" class="text-danger"> Please Enter valid Email</p> -->
+          <p *ngIf="form.get('Email')?.hasError('required') && form.get('Email')?.touched" class="text-danger">Please Enter Email</p>
+          <p *ngIf="form.get('Email')?.hasError('email') && form.get('Email')?.touched" class="text-danger">Invalid Email Format</p>
+       </div>
+    </div>
+    
+    <div class="col-6">
+      <div>Gender</div>
+      <div class="form-check form-check-inline pt-2">
+        <input class="form-check-input" type="radio"  id="inlineRadio1" value="Male" formControlName="gender">
+        <label class="form-check-label" for="inlineRadio1">Male</label>
+      </div>
+      <div class="form-check form-check-inline pt-2">
+        <input class="form-check-input" type="radio" id="inlineRadio2" value="Female" formControlName="gender">
+        <label class="form-check-label" for="inlineRadio2">Female</label>
+      </div>
+      <div class="form-check form-check-inline pt-2">
+        <input class="form-check-input" type="radio" id="inlineRadio3" value="Others" formControlName="gender">
+        <label class="form-check-label" for="inlineRadio3">Others</label>
+      </div>
+      <div class="mb-3">
+        <p *ngIf="form.get('gender')?.hasError('required') && form.get('gender')?.touched" class="text-danger">Please select a gender</p>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="row">
+    <div class="col-6">
+      <label for="inputPassword1">Password</label>
+      <input type="password" class="form-control" id="inputPassword1" placeholder="Password" formControlName="password">
+      <div class="mb-3">
+        <p *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched" class="text-danger">Please provide Password</p>
+        <p *ngIf="form?.hasError('mismatch') && form.get('confirm_password')?.touched" class="text-danger">
+          Please Check Your Password.
+        </p>
+      </div>
+    </div>
+    <div class="col-6">
+      <label for="inputPassword2">Confirm Password</label>
+      <input type="password" class="form-control" id="inputPassword2" placeholder="Confirm Password" formControlName="confirm_password">
+      <div class="mb-3">
+        <p *ngIf="form.get('password')?.hasError('required') && form.get('confirm_password')?.touched" class="text-danger">Please provide Confirm Password</p>
+        <p *ngIf="form?.hasError('mismatch') && form.get('confirm_password')?.touched" class="text-danger">
+          Confirm Password does not Match</p>
+        </div>
+      </div>
+    </div>
+    
+    <div formArrayName="address" >Address
+      <div *ngFor="let n of address.controls; let i = index" [formGroupName]="i" >
+        <div class="row">
+          <div class="col-8 pt-2">
+            <input type="text" formControlName="mainAddress" class="form-control " placeholder="Address">
+            <div>
+              <p *ngIf="address.at(i).get('mainAddress')?.hasError('required') && address.at(i).get('mainAddress')?.touched" class="text-danger">Please Enter Address</p>
+            </div>
+          </div>
+          <div class="col-4 pt-2">
+            <button class="btn btn-custom-size btn-success" type="button" (click)="addAddress()">Add address</button>
+            <button *ngIf="i > 0" class="btn btn-custom-size btn-danger" type="button" (click)="removeAddress(i)">Remove address</button>
+            <button class="btn btn-custom-size btn-dark" type="button" (click)="addPersonalDetails(i)">Add Personal Details</button>
+            
+          </div>
+        </div>
+        
+        <div formArrayName="personalDetail" *ngIf="getPersonalDetails(i)?.length" >
+        <div *ngFor="let addr of getPersonalDetails(i).controls; let j = index" [formGroupName]="j" class="row">
+          <div class="row col-12 ml-0 pt-1">
+            
+            <input type="text" formControlName="phoneNumber" class="form-control col-3" placeholder="Phone Number" minlength="10" >
+            <!-- <p *ngIf="getPersonalDetails(i).at(j).get('phoneNumber')?.hasError('required') && getPersonalDetails(i).at(j).get('phoneNumber')?.touched" class="text-danger">Please Enter Phone Number</p>
+            <p *ngIf="getPersonalDetails(i).at(j).get('phoneNumber')?.hasError('minlength') && getPersonalDetails(i).at(j).get('phoneNumber')?.touched" class="text-danger">Please Provide 10 Digit Pin Code</p> -->
+
+            
+            <!-- <input type="text" formControlName="bloodGroup" class="form-control  col-3" placeholder="Blood Group"> -->
+            <label for="inputState" ></label>
+            <select id="inputState" class="form-control col-3" formControlName="bloodGroup" >
+              <option value="" disabled selected>Select Blood Group</option>
+              <option value="O+ve">O +ve</option>
+              <option value="AB+ve">AB +ve</option>
+              <option value="AB-ve">AB -ve</option>
+            </select>
+            <button class="btn btn-custom-size btn-warning" type="button" (click)="removePersonalDetails(i, j)">Remove Personal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  <div class="row">
+    <div class="col-4 pt-3">
+      <label for="inputCity">City</label>
+      <input type="text" class="form-control" id="inputCity" placeholder="Raipur" formControlName="city">
+      <div>
+        <p *ngIf="form.get('city')?.hasError('required') && form.get('city')?.touched" class="text-danger">Please Enter City</p>
+      </div>
+    </div>
+    <div class="form-group col-md-4 pt-3">
+      <label for="inputState">State</label>
+      <select id="inputState" class="form-control" formControlName="state">
+        <option value="" disabled selected>Choose...</option>
+        <option value="Andra Pradesh">Andra Pradesh</option>
+        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+        <option value="Chhattisgarh">Chhattisgarh</option>   
+        <option value="Karnataka">Karnataka</option>
+        <option value="Maharashtra">Maharashtra</option>
+      </select>
+      <div>
+        <p *ngIf="form.get('state')?.hasError('required') && form.get('state')?.touched" class="text-danger">Please select a state</p>
+      </div>
+    </div>
+    <div class="form-group col-md-4 pt-3">
+      <label for="inputZip">Zip</label>
+      <input type="text" class="form-control" id="inputZip" placeholder="111000" formControlName="zip" minlength="6" maxlength="6">
+      <p *ngIf="form.get('zip')?.hasError('required') && form.get('zip')?.touched" class="text-danger">Please Provide Pin Code</p>
+      <p *ngIf="form.get('zip')?.hasError('minlength') && form.get('zip')?.touched" class="text-danger">Please Provide 6 Digit Pin Code</p>
+      <p *ngIf="form.get('zip')?.hasError('maxlength') && form.get('zip')?.touched" class="text-danger">Please Provide 6 Digit Pin Code</p>
+    </div>
+  </div>
+  
+  <button type="submit"  class="btn btn-primary">Submit</button>
+</form>
+</div>
+
+
+
